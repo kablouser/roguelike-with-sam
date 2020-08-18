@@ -428,7 +428,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1285221610}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.040725, y: 2.9864254, z: 0}
+  m_LocalPosition: {x: 7.973, y: 2.9864254, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1613,9 +1613,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2015177247}
   - component: {fileID: 2015177246}
-  - component: {fileID: 2015177250}
   - component: {fileID: 2015177249}
   - component: {fileID: 2015177248}
+  - component: {fileID: 2015177250}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -1682,7 +1682,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2015177245}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2, y: 3, z: 0}
+  m_LocalPosition: {x: -5, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1700,7 +1700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2f067fc20c20934ba90b5015c93e298, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentPosition: {x: -2, y: 3, z: 0}
+  currentPosition: {x: -5, y: 1, z: 0}
   tweenTime: 0.7
 --- !u!114 &2015177249
 MonoBehaviour:
@@ -1714,6 +1714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32ced2c8f5c497e42ad17e64367bdd1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerComponents: {fileID: 2015177250}
 --- !u!114 &2015177250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1723,6 +1724,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 2015177245}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 04bd9504ce8710f478debf07a3f59ecd, type: 3}
+  m_Script: {fileID: 11500000, guid: 41a0328ebc3d22040baabe8b141ba104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mover: {fileID: 2015177248}
+  playerController: {fileID: 2015177249}
