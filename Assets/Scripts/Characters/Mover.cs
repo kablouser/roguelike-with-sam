@@ -1,23 +1,21 @@
 ﻿using UnityEngine;
+using System;
 
 public class Mover : MonoBehaviour
 {
+    public float moveTime = 0.7f;
     [SerializeField]
     [ContextMenuItem("Set To Transform Position","SetCurrentToTransform")]
     private Vector3Int currentPosition;
-    private WorldTilemap world;
 
-    public float tweenTime = 0.7f;
+    private WorldTilemap world;
+    private Tweener moveTweener;
 
     private void Awake()
     {
         world = WorldTilemap.Current;
         world.AddForeground(currentPosition);
-    }
-
-    private void OnEnable()
-    {
-        
+        moveTweener = new Tweener(this);
     }
 
     private void SetCurrentToTransform()
@@ -26,20 +24,37 @@ public class Mover : MonoBehaviour
         currentPosition.x = Mathf.RoundToInt(transformPosition.x);
         currentPosition.y = Mathf.RoundToInt(transformPosition.y);
         transform.position = currentPosition;
+
+        //UnityEditor namespace is not used when building the game
+#if UNITY_EDITOR
+        //if this script is on a prefab, the changes made here are ignored
+        //so we need to record modifications on this
+        UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(this);
+#endif
     }
 
-    //move to new position
-    public virtual void Move(Vector3Int direction, bool ignorePrevious = false)
+    public bool Move(Vector3Int direction, Action onEnd = null)
     {
-        if (ignorePrevious == false)
-            world.RemoveForeground(currentPosition);
+        if (world.IsWalkable(currentPosition + direction) == false)
+            return false;
+
+        Action onMoveEnd;
+        Vector3Int previousPosition;
+
+        previousPosition = currentPosition;
+        onMoveEnd = () =>
+        {
+            world.RemoveForeground(previousPosition);
+            onEnd?.Invoke();
+        };
 
         currentPosition += direction;
         world.AddForeground(currentPosition);
 
-        transform.position += direction;
-    }
+        moveTweener.Start(
+            moveTweener.MoveRoutine(transform, previousPosition, currentPosition, moveTime),
+            onMoveEnd);
 
-    [ContextMenu("MOVE")]
-    private void InspectorMove() => Move(new Vector3Int(1, 0, 0));
+        return true;
+    }
 }

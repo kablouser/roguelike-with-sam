@@ -4,40 +4,69 @@ using UnityEngine;
 
 public class TurnManager : Singleton<TurnManager>
 {
-    public interface ITurnable
-    {
-        bool IsTurnOver();
-        void StartTurn();
-        void EndTurn();
-    }
+    private PlayerComponents player;
+    private List<EnemyComponents> enemies;
+    private List<EnemyComponents> deadEnemies;
 
-    public ITurnable player;
-    public List<ITurnable> enemies;
-    public List<ITurnable> enemiesDiedThisTurn;
+    public void RegisterPlayer(PlayerComponents player) =>
+        this.player = player;
+
+    public void RegisterEnemy(EnemyComponents enemy) =>
+        enemies.Add(enemy);
+
+    public void ReportDead(CharacterComponents character)
+    {
+        if(character is EnemyComponents enemy)
+            deadEnemies.Add(enemy);
+        else if(character is PlayerComponents player)
+        {
+            //The player died!
+
+        }
+    }
 
     public void EndPlayerTurn()
     {
-        player.EndTurn();
-        //move all enemies
+        player.playerController.LockControl();        
         StartCoroutine(MoveEnemies());
+    }
+
+    public override void Awake()
+    {
+        base.Awake();
+        if (Current == this)
+        {
+            enemies = new List<EnemyComponents>();
+            deadEnemies = new List<EnemyComponents>();
+        }
+    }
+
+    private void Start()
+    {
+        player.playerController.UnlockControl();
     }
 
     private IEnumerator MoveEnemies()
     {
-        for(int i = 0; i < enemies.Count; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
-            enemies[i].StartTurn();
-            yield return new WaitUntil(() => enemies[i].IsTurnOver() == false);
-            enemies[i].EndTurn();
+            var enemySheet = enemies[i].characterSheet;
+            enemySheet.NewTurn();
+            yield return new WaitUntil(() => enemySheet.IsAnimationOver);
+
+            var enemyController = enemies[i].enemyController;
+            enemyController.StartTurn();
+            yield return new WaitWhile(() => enemyController.IsTurnOver == false);
         }
 
-        //remove dead enemies from list
-        for(int i = 0; i < enemiesDiedThisTurn.Count; i++)
+        for(int i = 0; i < deadEnemies.Count; i++)
         {
-            enemies.Remove(enemiesDiedThisTurn[i]);
+            enemies.Remove(deadEnemies[i]);
+            deadEnemies[i].deathController.OnCleanup();
         }
 
         //start player turn
-        player.StartTurn();
+        player.characterSheet.NewTurn();
+        player.playerController.UnlockControl();
     }
 }
