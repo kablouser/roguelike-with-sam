@@ -14,7 +14,7 @@ public class Mover : MonoBehaviour
     private void Awake()
     {
         world = WorldTilemap.Current;
-        world.AddForeground(currentPosition);
+        world.AddForeground(currentPosition, true);
         moveTweener = new Tweener(this);
     }
 
@@ -44,12 +44,12 @@ public class Mover : MonoBehaviour
         previousPosition = currentPosition;
         onMoveEnd = () =>
         {
-            world.RemoveForeground(previousPosition);
+            world.RemoveForeground(previousPosition, true);
             onEnd?.Invoke();
         };
 
         currentPosition += direction;
-        world.AddForeground(currentPosition);
+        world.AddForeground(currentPosition, true);
 
         moveTweener.Start(
             moveTweener.MoveRoutine(transform, previousPosition, currentPosition, moveTime),

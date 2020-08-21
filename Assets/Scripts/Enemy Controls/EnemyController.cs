@@ -6,6 +6,7 @@ public class EnemyController : MonoBehaviour
     public bool IsTurnOver { get; private set; }
 
     public EnemyComponents character;
+    public bool tryMove = true;
 
     private void Awake()
     {
@@ -14,6 +15,12 @@ public class EnemyController : MonoBehaviour
 
     public void StartTurn()
     {
+        if(tryMove == false)
+        {
+            IsTurnOver = true;
+            return;
+        }
+
         IsTurnOver = false;
         Vector3Int moveDirection;
 
