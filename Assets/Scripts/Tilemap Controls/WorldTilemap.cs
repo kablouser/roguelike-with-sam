@@ -1,31 +1,34 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class WorldTilemap : Singleton<WorldTilemap>
 {
-    private struct HiddenBackground
+    public interface IOverlay
     {
-        //we could hold a list here to debug easier
+        bool IsBlocking { get; }
+    }
+
+    private struct OverlayTile
+    {
         /// <summary>
         /// how many foreground items are drawn on top? e.g. 1 player, 1 slash effect = count is 2
         /// </summary>
-        public int foregroundCount;
-        public int blockingObjects;
-        public TileBase tile;
+        public List<IOverlay> overlays;
+        public TileBase backgroundTile;
 
-        public HiddenBackground(int foregroundCount, int blockingObjects, TileBase tile)
+        public OverlayTile(IOverlay overlay, TileBase backgroundTile)
         {
-            this.foregroundCount = foregroundCount;
-            this.blockingObjects = blockingObjects;
-            this.tile = tile;
+            overlays = new List<IOverlay>() { overlay };
+            this.backgroundTile = backgroundTile;
         }
     }
 
     public Tilemap backgroundTilemap;
     public TileBase[] nonWalkableTiles;
 
-    private Dictionary<Vector3Int, HiddenBackground> hiddenTiles;
+    private Dictionary<Vector3Int, OverlayTile> overlayTiles;
     private HashSet<TileBase> nonWalkableSet;
 
     public override void Awake()
@@ -34,51 +37,36 @@ public class WorldTilemap : Singleton<WorldTilemap>
         if (Current == this)
         {
             //initialise other stuff here
-            hiddenTiles = new Dictionary<Vector3Int, HiddenBackground>();
+            overlayTiles = new Dictionary<Vector3Int, OverlayTile>();
             nonWalkableSet = new HashSet<TileBase>(nonWalkableTiles);
         }
     }
 
-    public void AddForeground(Vector3Int position, bool isBlocking)
+    public void AddForeground(Vector3Int position, IOverlay overlay)
     {
-        if(hiddenTiles.TryGetValue(position, out HiddenBackground hidden))
+        if(overlayTiles.TryGetValue(position, out OverlayTile overlayTile))
         {
-            hidden.foregroundCount++;
-            if (isBlocking)
-                hidden.blockingObjects++;
-            //structure is not a reference, so we have to reassign to update the value
-            hiddenTiles[position] = hidden;
+            overlayTile.overlays.Add(overlay);
         }
         else
         {
-            hiddenTiles.Add(position,
-                new HiddenBackground(1, isBlocking ? 1 : 0, backgroundTilemap.GetTile(position)));
+            overlayTiles.Add(position,
+                new OverlayTile(overlay, backgroundTilemap.GetTile(position)));
             //remove it from the tilemap
             backgroundTilemap.SetTile(position, null);
         }
     }
 
-    public void RemoveForeground(Vector3Int position, bool isBlocking)
+    public void RemoveForeground(Vector3Int position, IOverlay overlay)
     {
-        if (hiddenTiles.TryGetValue(position, out HiddenBackground hidden))
+        if (overlayTiles.TryGetValue(position, out OverlayTile overlayTile))
         {
-            hidden.foregroundCount--;
-            if (isBlocking)
-            {
-                hidden.blockingObjects--;
-                if (hidden.blockingObjects < 0)
-                    Debug.LogWarning("You have removed too many foreground blocking objects!", this);
-            }
+            overlayTile.overlays.Remove(overlay);
 
-            if (hidden.foregroundCount == 0)
+            if (overlayTile.overlays.Count == 0)
             {
-                hiddenTiles.Remove(position);
-                backgroundTilemap.SetTile(position, hidden.tile);
-            }
-            else
-            {
-                //structure is not a reference, so we have to reassign to update the value
-                hiddenTiles[position] = hidden;
+                overlayTiles.Remove(position);
+                backgroundTilemap.SetTile(position, overlayTile.backgroundTile);
             }
         }
         else
@@ -87,13 +75,23 @@ public class WorldTilemap : Singleton<WorldTilemap>
         }        
     }
 
+    /// <summary>
+    /// Use this function to detect characters in the scene
+    /// </summary>
+    public ReadOnlyCollection<IOverlay> GetOverlays(Vector3Int position)
+    {
+        if (overlayTiles.TryGetValue(position, out OverlayTile overlayTile))
+            return overlayTile.overlays.AsReadOnly();
+        else return null;
+    }
+
     public bool IsWalkable(Vector3Int position)
     {
-        if (hiddenTiles.TryGetValue(position, out HiddenBackground hidden))
-        {
-            return hidden.blockingObjects == 0 &&
-                nonWalkableSet.Contains(hidden.tile) == false;
-        }
+        if (overlayTiles.TryGetValue(position, out OverlayTile overlayTile))
+            //if we find no blocking foreground objects and
+            return overlayTile.overlays.Find((x) => x.IsBlocking) == null &&
+                //the background tile is walkable
+                nonWalkableSet.Contains(overlayTile.backgroundTile) == false;
         else
             return nonWalkableSet.Contains(backgroundTilemap.GetTile(position)) == false;
     }

@@ -25,11 +25,13 @@ public class PlayerController : MonoBehaviour
 
         if (previousInput.x != moveInput.x && moveInput.x != 0)
         {
-            character.mover.Move(new Vector3Int(moveInput.x, 0, 0), turnManager.EndPlayerTurn);
+            moveInput.y = 0;
+            MoveOrAttack();
         }
         else if(previousInput.y != moveInput.y && moveInput.y != 0)
         {
-            character.mover.Move(new Vector3Int(0, moveInput.y, 0), turnManager.EndPlayerTurn);
+            moveInput.x = 0;
+            MoveOrAttack();
         }
     }
 
@@ -42,5 +44,11 @@ public class PlayerController : MonoBehaviour
     public void LockControl()
     {
         isLocked = true;
+    }
+
+    private void MoveOrAttack()
+    {
+        if (character.mover.Move(new Vector3Int(moveInput.x, moveInput.y, 0), turnManager.EndPlayerTurn) == false)
+            character.combatant.Attack(moveInput);
     }
 }

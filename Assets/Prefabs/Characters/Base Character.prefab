@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 650176680742171765}
   - component: {fileID: 650176680742171764}
   - component: {fileID: 650176680742171767}
+  - component: {fileID: 1575427122898760220}
   m_Layer: 0
   m_Name: Base Character
   m_TagString: Untagged
@@ -50,6 +51,7 @@ MonoBehaviour:
   mover: {fileID: 650176680742171765}
   characterSheet: {fileID: 650176680742171764}
   deathController: {fileID: 650176680742171767}
+  combatant: {fileID: 1575427122898760220}
 --- !u!114 &650176680742171765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,6 +64,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2f067fc20c20934ba90b5015c93e298, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 650176680742171762}
   moveTime: 0.1
   currentPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &650176680742171764
@@ -77,7 +80,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 650176680742171762}
-  health: 1
+  health:
+    current: 10
+    max: 10
+    linkedCharacter: {fileID: 650176680742171764}
+  mana:
+    current: 10
+    max: 10
+  strength:
+    baseValue: 0
+    additional: 0
+  intelligence:
+    baseValue: 0
+    additional: 0
+  attack:
+    baseValue: 0
+    additional: 0
+    linkedCharacter: {fileID: 650176680742171764}
 --- !u!114 &650176680742171767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,6 +112,52 @@ MonoBehaviour:
   characterSprite: {fileID: 650176681382596777}
   deathEffect: {fileID: 6110812364308479039, guid: 7b6b2caab08869a47aea20d020cec6be,
     type: 3}
+  shrinkSpriteScale:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 8.083772
+      outSlope: 8.083772
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.26540285
+    - serializedVersion: 3
+      time: 0.1
+      value: 1.6
+      inSlope: 0.0022646005
+      outSlope: 0.30179563
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.3098341
+    - serializedVersion: 3
+      time: 0.5
+      value: 0
+      inSlope: -6.0707254
+      outSlope: -6.0707254
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.07701427
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &1575427122898760220
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650176680742171766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4287ab8b691aa0448b84387dd79d9d95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  character: {fileID: 650176680742171762}
 --- !u!1 &650176681382596777
 GameObject:
   m_ObjectHideFlags: 0

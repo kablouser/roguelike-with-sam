@@ -3,6 +3,9 @@ using System;
 
 public class Mover : MonoBehaviour
 {
+    public Vector3Int GetPosition => currentPosition;
+
+    public CharacterComponents character;
     public float moveTime = 0.7f;
     [SerializeField]
     [ContextMenuItem("Set To Transform Position","SetCurrentToTransform")]
@@ -13,8 +16,10 @@ public class Mover : MonoBehaviour
 
     private void Awake()
     {
+        SetCurrentToTransform();
+
         world = WorldTilemap.Current;
-        world.AddForeground(currentPosition, true);
+        world.AddForeground(currentPosition, character);
         moveTweener = new Tweener(this);
     }
 
@@ -44,17 +49,22 @@ public class Mover : MonoBehaviour
         previousPosition = currentPosition;
         onMoveEnd = () =>
         {
-            world.RemoveForeground(previousPosition, true);
+            world.RemoveForeground(previousPosition, character);
             onEnd?.Invoke();
         };
 
         currentPosition += direction;
-        world.AddForeground(currentPosition, true);
+        world.AddForeground(currentPosition, character);
 
         moveTweener.Start(
             moveTweener.MoveRoutine(transform, previousPosition, currentPosition, moveTime),
             onMoveEnd);
 
         return true;
+    }
+
+    public void EndMoveAnimation()
+    {
+        moveTweener.End();
     }
 }

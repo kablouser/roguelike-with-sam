@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
-public class CharacterComponents : MonoBehaviour
+public class CharacterComponents : MonoBehaviour, WorldTilemap.IOverlay
 {
+    bool WorldTilemap.IOverlay.IsBlocking => true;
+
     public Mover mover;
     public CharacterSheet characterSheet;
     public DeathController deathController;
+    public Combatant combatant;
 }
