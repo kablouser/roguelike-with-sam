@@ -49,7 +49,7 @@ public class RandomRooms : MonoBehaviour
             TempRoomPossibilities = roomPossibilities;
             tempSaveOfFreeExpansions = freeExpansions;
 
-            int roomIndex = Random.Range(0, TempRoomPossibilities.Count - 1);
+            int roomIndex = Random.Range(0, TempRoomPossibilities.Count);
 
             if(x == 0)
             {
@@ -61,7 +61,7 @@ public class RandomRooms : MonoBehaviour
                 bool whileLoop = true;
                 while(whileLoop)
                 {
-                    int positionIndex = Random.Range(0, freeExpansions.Count - 1);
+                    int positionIndex = Random.Range(0, freeExpansions.Count);
                     Debug.Log("PositionIndex: " + positionIndex + "roomIndex: " + roomIndex);
                     Debug.Log("FreeExpansionCount: " + freeExpansions.Count);
 
