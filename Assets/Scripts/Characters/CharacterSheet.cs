@@ -54,6 +54,9 @@ public class CharacterSheet : MonoBehaviour
     public void UpdateHealth()
     {
         if (IsAlive == false)
+        {
             character.deathController.OnDeath();
+            TurnManager.Current.ReportDead(character);
+        }
     }
 }

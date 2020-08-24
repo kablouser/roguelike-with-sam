@@ -112,39 +112,7 @@ MonoBehaviour:
   characterSprite: {fileID: 650176681382596777}
   deathEffect: {fileID: 6110812364308479039, guid: 7b6b2caab08869a47aea20d020cec6be,
     type: 3}
-  shrinkSpriteScale:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 8.083772
-      outSlope: 8.083772
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.26540285
-    - serializedVersion: 3
-      time: 0.1
-      value: 1.6
-      inSlope: 0.0022646005
-      outSlope: 0.30179563
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.3098341
-    - serializedVersion: 3
-      time: 0.5
-      value: 0
-      inSlope: -6.0707254
-      outSlope: -6.0707254
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.07701427
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
+  scaleAnimation: {fileID: 11400000, guid: 10247b4712ff99b459ccfe4a7dd03f0e, type: 2}
 --- !u!114 &1575427122898760220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,6 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 650176680742171762}
+  attackAnimation: {fileID: 11400000, guid: 6323ea6d1eb48644089a14818d0d1262, type: 2}
 --- !u!1 &650176681382596777
 GameObject:
   m_ObjectHideFlags: 0

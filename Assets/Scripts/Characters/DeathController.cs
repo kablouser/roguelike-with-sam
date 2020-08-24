@@ -8,41 +8,37 @@ public class DeathController : MonoBehaviour
 {
     public GameObject characterSprite;
     public GameObject deathEffect;
-    public AnimationCurve shrinkSpriteScale;
-
-    private GameObject effectInstance;
+    public CurveScriptable scaleAnimation;
 
     public void OnDeath()
     {
-        StartCoroutine(ShrinkSprite());
-        effectInstance = Instantiate(deathEffect, characterSprite.transform.position, Quaternion.identity);
+        Tweener.EnqueueMain(new Tweener(this, DeathAnimation(), OnCleanup));
     }
 
     public void OnCleanup()
     {
         Destroy(gameObject);
-        if (effectInstance != null)
-            Destroy(effectInstance);
     }
 
     [ContextMenu("Shrink Animation")]
-    private void DoAnimation()
+    private void InspectorAnimation()
     {
-        StartCoroutine(ShrinkSprite(() =>
+        Tweener.EnqueueMain(new Tweener(this, DeathAnimation(), () =>
         {
             characterSprite.SetActive(true);
             characterSprite.transform.localScale = Vector3.one;
-        }
-        ));
+        }));
     }
 
-    private IEnumerator ShrinkSprite(System.Action onFinished = null)
+    private IEnumerator DeathAnimation()
     {
+        Instantiate(deathEffect, characterSprite.transform.position, Quaternion.identity);
+
         float time = 0;
         float readValue;
         while(true)
         {
-            readValue = shrinkSpriteScale.Evaluate(time);
+            readValue = scaleAnimation.curve.Evaluate(time);
             if (readValue <= 0.01f)
                 break;
             characterSprite.transform.localScale = Vector3.one * readValue;
@@ -52,6 +48,5 @@ public class DeathController : MonoBehaviour
         }
 
         characterSprite.SetActive(false);
-        onFinished?.Invoke();
     }
 }

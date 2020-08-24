@@ -23,6 +23,11 @@ public class Mover : MonoBehaviour
         moveTweener = new Tweener(this);
     }
 
+    private void OnDisable()
+    {
+        world.RemoveForeground(currentPosition, character);
+    }
+
     private void SetCurrentToTransform()
     {
         Vector3 transformPosition = transform.position;
@@ -40,6 +45,12 @@ public class Mover : MonoBehaviour
 
     public bool Move(Vector3Int direction, Action onEnd = null)
     {
+        if(direction == Vector3Int.zero)
+        {
+            Debug.LogWarning("You shouldn't be moving in zero direction.");
+            return false;
+        }
+
         if (world.IsWalkable(currentPosition + direction) == false)
             return false;
 
@@ -56,15 +67,10 @@ public class Mover : MonoBehaviour
         currentPosition += direction;
         world.AddForeground(currentPosition, character);
 
-        moveTweener.Start(
-            moveTweener.MoveRoutine(transform, previousPosition, currentPosition, moveTime),
-            onMoveEnd);
+        moveTweener.SetEnumerator(moveTweener.MoveRoutine(transform, previousPosition, currentPosition, moveTime));
+        moveTweener.SetOnEnd(onMoveEnd);
+        Tweener.EnqueueMain(moveTweener);
 
         return true;
-    }
-
-    public void EndMoveAnimation()
-    {
-        moveTweener.End();
     }
 }

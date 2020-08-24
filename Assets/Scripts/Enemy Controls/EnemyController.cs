@@ -4,9 +4,16 @@ public class EnemyController : MonoBehaviour
 {
     public const int maxAttempts = 999;
     public bool IsTurnOver { get; private set; }
+    public Vector3Int GetPlayerPosition => PlayerController.Current.character.mover.GetPosition;
 
     public EnemyComponents character;
     public bool tryMove = true;
+
+    public float idleWeight = 1.0f;
+    public float aggroWeight = 1.0f;
+    public float wanderWeight = 1.0f;
+
+    public string lastMove;
 
     private void Awake()
     {
@@ -22,8 +29,54 @@ public class EnemyController : MonoBehaviour
         }
 
         IsTurnOver = false;
-        Vector3Int moveDirection;
+        float randomChoice = Random.Range(0, idleWeight + aggroWeight + wanderWeight);
+        if(randomChoice < idleWeight)
+        {
+            //idle
+            lastMove = "idle";
+            EndTurn();
+        }
+        else if(randomChoice < idleWeight + aggroWeight)
+        {
+            //aggro
+            if (TryHitPlayer() == false)
+            {
+                //if it fails
+                lastMove = "try hit player failed";
+                MoveRandomly();                
+            }
+            else
+                lastMove = "try hit player";
+        }
+        else
+        {
+            //wander
+            lastMove = "wander";
+            MoveRandomly();
+        }
+    }
 
+    private bool TryHitPlayer()
+    {
+        Vector3Int playerDirection = GetPlayerPosition - character.mover.GetPosition;
+        if (playerDirection.y == 0)
+            //move in x
+            return character.mover.Move(new Vector3Int(SnapValue(playerDirection.x), 0, 0), EndTurn);
+        else if(playerDirection.x == 0)
+            //move in y
+            return character.mover.Move(new Vector3Int(0, SnapValue(playerDirection.y), 0), EndTurn);
+
+        if (Mathf.Abs(playerDirection.x) < Mathf.Abs(playerDirection.y))
+            //move in x
+            return character.mover.Move(new Vector3Int(SnapValue(playerDirection.x), 0, 0), EndTurn);
+        else
+            //move in y
+            return character.mover.Move(new Vector3Int(0, SnapValue(playerDirection.y), 0), EndTurn);
+    }
+
+    private void MoveRandomly()
+    {
+        Vector3Int moveDirection;
         int attempts = 0;
         do
         {
@@ -37,8 +90,19 @@ public class EnemyController : MonoBehaviour
                 moveDirection.y = negativeOrOne;
 
             attempts++;
+            if (maxAttempts < attempts)
+            {
+                EndTurn();
+                return;
+            }
         }
-        while (character.mover.Move(moveDirection, () => IsTurnOver = true) == false
-            && attempts < maxAttempts);
+        while (character.mover.Move(moveDirection, EndTurn) == false);
     }
+
+    /// <summary>
+    /// Snaps a value to -1 or 1, which ever is closer
+    /// </summary>
+    private int SnapValue(int value) => 0 < value ? 1 : -1;
+
+    private void EndTurn() => IsTurnOver = true;
 }

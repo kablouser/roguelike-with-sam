@@ -16,18 +16,18 @@ public class TurnManager : Singleton<TurnManager>
 
     public void ReportDead(CharacterComponents character)
     {
-        if(character is EnemyComponents enemy)
+        if (character is EnemyComponents enemy)
+        {
             deadEnemies.Add(enemy);
-        else if(character is PlayerComponents player)
+        }
+        else if (character is PlayerComponents player)
         {
             //The player died!
-
         }
     }
 
     public void EndPlayerTurn()
     {
-        player.playerController.LockControl();        
         StartCoroutine(MoveEnemies());
     }
 
@@ -48,6 +48,10 @@ public class TurnManager : Singleton<TurnManager>
 
     private IEnumerator MoveEnemies()
     {
+        for (int i = 0; i < deadEnemies.Count; i++)
+            enemies.Remove(deadEnemies[i]);
+        deadEnemies.Clear();
+
         for (int i = 0; i < enemies.Count; i++)
         {
             var enemySheet = enemies[i].characterSheet;
@@ -60,10 +64,8 @@ public class TurnManager : Singleton<TurnManager>
         }
 
         for(int i = 0; i < deadEnemies.Count; i++)
-        {
             enemies.Remove(deadEnemies[i]);
-            deadEnemies[i].deathController.OnCleanup();
-        }
+        deadEnemies.Clear();
 
         //start player turn
         player.characterSheet.NewTurn();

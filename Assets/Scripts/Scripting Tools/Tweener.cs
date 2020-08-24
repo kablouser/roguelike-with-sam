@@ -1,33 +1,63 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class Tweener
 {
+    public static Tweener GetCurrentMain => mainQueue.Count == 0 ? null : mainQueue.Peek();
+
+    private static readonly Queue<Tweener> mainQueue = new Queue<Tweener>();
     private static readonly AnimationCurve easeInOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
-    private MonoBehaviour caller;        
-    private bool isEnded;
+    private MonoBehaviour caller;
+    private IEnumerator enumerator;
     private Coroutine coroutine;
+
     private Action coroutineOnEnd;
     private Action additionalOnEnd;
+
+    private bool isEnded;
+
+    public static void EnqueueMain(Tweener tweener)
+    {
+        mainQueue.Enqueue(tweener);
+        if (mainQueue.Count == 1)
+            //start execution chain
+            tweener.Start();
+    }
 
     public Tweener(MonoBehaviour caller)
     {
         this.caller = caller;
-
-        isEnded = true;
+        enumerator = null;
         coroutine = null;
         coroutineOnEnd = additionalOnEnd = null;
+
+        isEnded = true;
     }
 
-    public void Start(IEnumerator startCoroutine, Action onEnd = null)
+    public Tweener(MonoBehaviour caller, IEnumerator enumerator, Action onEnd = null)
+    {
+        this.caller = caller;
+        this.enumerator = enumerator;
+        coroutine = null;
+        coroutineOnEnd = null;
+        additionalOnEnd = onEnd;
+
+        isEnded = true;
+    }
+
+    public void SetEnumerator(IEnumerator enumerator) => this.enumerator = enumerator;
+    public void SetOnEnd(Action onEnd) => additionalOnEnd = onEnd;
+
+    public void Start()
     {
         if(isEnded == false)
             End();
 
-        additionalOnEnd = onEnd;
-        coroutine = caller.StartCoroutine(startCoroutine);
+        coroutineOnEnd = null;
+        coroutine = caller.StartCoroutine(RoutineWrapper(enumerator));
     }
 
     public void End()
@@ -35,15 +65,31 @@ public class Tweener
         if (isEnded == false)
         {
             isEnded = true;
-            caller.StopCoroutine(coroutine);
+
+            if (GetCurrentMain == this)
+            {
+                //execute next in queue
+                mainQueue.Dequeue();
+                if (0 < mainQueue.Count)
+                    mainQueue.Peek().Start();
+            }
+            
+            if (coroutine != null)
+                caller.StopCoroutine(coroutine);
             coroutineOnEnd?.Invoke();
             additionalOnEnd?.Invoke();
         }
     }
 
-    public IEnumerator MoveRoutine(Transform moveTarget, Vector3 startPosition, Vector3 endPosition, float duration)
+    public IEnumerator RoutineWrapper(IEnumerator actualRoutine)
     {
         isEnded = false;
+        yield return actualRoutine;
+        End();
+    }
+
+    public IEnumerator MoveRoutine(Transform moveTarget, Vector3 startPosition, Vector3 endPosition, float duration)
+    {
         coroutineOnEnd = () => moveTarget.position = endPosition;
 
         Vector3 travelDirection = endPosition - startPosition;
@@ -56,7 +102,5 @@ public class Tweener
             yield return null;
         }
         while (progress < 1);
-
-        End();
     }
 }

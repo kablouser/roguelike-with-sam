@@ -30,7 +30,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 1436555469445490154}
-  moveInput: {x: 0, y: 0}
+  repeatDelay: 0.2
+  inputsPerSecond: 20
+  speedupTime: 2
 --- !u!1001 &6509323586195643781
 PrefabInstance:
   m_ObjectHideFlags: 0
