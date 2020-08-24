@@ -18,4 +18,9 @@ public class Room : ScriptableObject
     {
         Debug.Log("Length: " + tiles.Length);
     }
+
+    public bool GetAvailableEntranceDirection(Direction direction)
+    {
+        return availableEntranceDirections[(int)direction];
+    }
 }
