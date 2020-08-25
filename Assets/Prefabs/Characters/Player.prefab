@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mover: {fileID: 6003341662114441712}
   characterSheet: {fileID: 6003341662114441713}
-  deathController: {fileID: 6003341662114441714}
   combatant: {fileID: 5731052418312318873}
   playerController: {fileID: 6721632197755025841}
 --- !u!114 &6721632197755025841
@@ -31,8 +30,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 1436555469445490154}
   repeatDelay: 0.2
-  inputsPerSecond: 20
+  inputsPerSecond: 30
   speedupTime: 2
+  diagonalSwitchWait: 0.2
 --- !u!1001 &6509323586195643781
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -162,18 +162,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 503185c6ac7ec504b841dd87fc12ef5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &6003341662114441714 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 650176680742171767, guid: 4642678cff2fe5d41bdbf68bf3e32fa3,
-    type: 3}
-  m_PrefabInstance: {fileID: 6509323586195643781}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6003341662114441715}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9574755ee7f76f04b9e3e45fbde29061, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &5731052418312318873 stripped

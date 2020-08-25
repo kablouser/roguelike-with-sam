@@ -6,6 +6,5 @@ public class CharacterComponents : MonoBehaviour, WorldTilemap.IOverlay
 
     public Mover mover;
     public CharacterSheet characterSheet;
-    public DeathController deathController;
     public Combatant combatant;
 }

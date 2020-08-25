@@ -6,9 +6,10 @@ using UnityEngine;
 public class Tweener
 {
     public static Tweener GetCurrentMain => mainQueue.Count == 0 ? null : mainQueue.Peek();
-
     private static readonly Queue<Tweener> mainQueue = new Queue<Tweener>();
     private static readonly AnimationCurve easeInOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    public bool IsEnded { get; private set; }
 
     private MonoBehaviour caller;
     private IEnumerator enumerator;
@@ -16,8 +17,6 @@ public class Tweener
 
     private Action coroutineOnEnd;
     private Action additionalOnEnd;
-
-    private bool isEnded;
 
     public static void EnqueueMain(Tweener tweener)
     {
@@ -34,7 +33,7 @@ public class Tweener
         coroutine = null;
         coroutineOnEnd = additionalOnEnd = null;
 
-        isEnded = true;
+        IsEnded = true;
     }
 
     public Tweener(MonoBehaviour caller, IEnumerator enumerator, Action onEnd = null)
@@ -45,7 +44,7 @@ public class Tweener
         coroutineOnEnd = null;
         additionalOnEnd = onEnd;
 
-        isEnded = true;
+        IsEnded = true;
     }
 
     public void SetEnumerator(IEnumerator enumerator) => this.enumerator = enumerator;
@@ -53,18 +52,18 @@ public class Tweener
 
     public void Start()
     {
-        if(isEnded == false)
+        if(IsEnded == false)
             End();
 
         coroutineOnEnd = null;
         coroutine = caller.StartCoroutine(RoutineWrapper(enumerator));
     }
 
-    public void End()
+    public void End(bool justStop = false)
     {
-        if (isEnded == false)
+        if (IsEnded == false)
         {
-            isEnded = true;
+            IsEnded = true;
 
             if (GetCurrentMain == this)
             {
@@ -76,14 +75,18 @@ public class Tweener
             
             if (coroutine != null)
                 caller.StopCoroutine(coroutine);
-            coroutineOnEnd?.Invoke();
-            additionalOnEnd?.Invoke();
+
+            if (justStop == false)
+            {
+                coroutineOnEnd?.Invoke();
+                additionalOnEnd?.Invoke();
+            }
         }
     }
 
     public IEnumerator RoutineWrapper(IEnumerator actualRoutine)
     {
-        isEnded = false;
+        IsEnded = false;
         yield return actualRoutine;
         End();
     }
@@ -102,5 +105,22 @@ public class Tweener
             yield return null;
         }
         while (progress < 1);
+    }
+
+    public IEnumerator ScaleWithCurve(Transform scaleTransform, AnimationCurve curve)
+    {
+        coroutineOnEnd = () => scaleTransform.localScale = Vector3.one;
+
+        float time = 0;
+        float finalTime = curve.keys[curve.length - 1].time;
+        do
+        {
+            float readValue = curve.Evaluate(time);
+            scaleTransform.localScale = Vector3.one * readValue;
+
+            yield return null;
+            time += Time.deltaTime;
+        }
+        while (time < finalTime);
     }
 }

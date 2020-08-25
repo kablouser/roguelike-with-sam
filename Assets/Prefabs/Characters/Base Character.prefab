@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 650176680742171762}
   - component: {fileID: 650176680742171765}
   - component: {fileID: 650176680742171764}
-  - component: {fileID: 650176680742171767}
   - component: {fileID: 1575427122898760220}
   m_Layer: 0
   m_Name: Base Character
@@ -50,7 +49,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mover: {fileID: 650176680742171765}
   characterSheet: {fileID: 650176680742171764}
-  deathController: {fileID: 650176680742171767}
   combatant: {fileID: 1575427122898760220}
 --- !u!114 &650176680742171765
 MonoBehaviour:
@@ -97,22 +95,6 @@ MonoBehaviour:
     baseValue: 0
     additional: 0
     linkedCharacter: {fileID: 650176680742171764}
---- !u!114 &650176680742171767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 650176680742171766}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9574755ee7f76f04b9e3e45fbde29061, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterSprite: {fileID: 650176681382596777}
-  deathEffect: {fileID: 6110812364308479039, guid: 7b6b2caab08869a47aea20d020cec6be,
-    type: 3}
-  scaleAnimation: {fileID: 11400000, guid: 10247b4712ff99b459ccfe4a7dd03f0e, type: 2}
 --- !u!114 &1575427122898760220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,7 +108,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   character: {fileID: 650176680742171762}
+  characterSprite: {fileID: 650176681382596777}
+  deathEffect: {fileID: 6110812364308479039, guid: 7b6b2caab08869a47aea20d020cec6be,
+    type: 3}
   attackAnimation: {fileID: 11400000, guid: 6323ea6d1eb48644089a14818d0d1262, type: 2}
+  onHitAnimation: {fileID: 11400000, guid: 1264282eec8c8d0408d78190fb788a9d, type: 2}
+  deathAnimation: {fileID: 11400000, guid: 10247b4712ff99b459ccfe4a7dd03f0e, type: 2}
 --- !u!1 &650176681382596777
 GameObject:
   m_ObjectHideFlags: 0

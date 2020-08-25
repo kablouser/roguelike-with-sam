@@ -10,47 +10,38 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42cc35248bd9f3c4f8d67175dd3d06db, type: 3}
-  m_Name: Attack Animation
+  m_Name: On Hit Animation
   m_EditorClassIdentifier: 
   curve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
-      inSlope: -7.084465
-      outSlope: -7.084465
+      value: 1
+      inSlope: -19.836315
+      outSlope: -19.836315
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.1302834
-    - serializedVersion: 3
-      time: 0.1125
-      value: 0.8
-      inSlope: 8.948697
-      outSlope: 0.00011426873
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 0.08487423
       outWeight: 1
     - serializedVersion: 3
-      time: 0.15
-      value: 0.8
-      inSlope: 0
-      outSlope: 0
+      time: 0.020130912
+      value: 0.6
+      inSlope: -0.09411818
+      outSlope: -0.09411818
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      inWeight: 0.33333334
+      outWeight: 1
     - serializedVersion: 3
-      time: 0.3
-      value: 0
-      inSlope: 0
-      outSlope: 0
+      time: 0.1
+      value: 1
+      inSlope: 4.1903915
+      outSlope: 4.1903915
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      inWeight: 0.114802785
+      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4

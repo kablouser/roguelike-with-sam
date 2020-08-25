@@ -13,8 +13,6 @@ public class EnemyController : MonoBehaviour
     public float aggroWeight = 1.0f;
     public float wanderWeight = 1.0f;
 
-    public string lastMove;
-
     private void Awake()
     {
         TurnManager.Current.RegisterEnemy(character);
@@ -33,7 +31,6 @@ public class EnemyController : MonoBehaviour
         if(randomChoice < idleWeight)
         {
             //idle
-            lastMove = "idle";
             EndTurn();
         }
         else if(randomChoice < idleWeight + aggroWeight)
@@ -42,16 +39,12 @@ public class EnemyController : MonoBehaviour
             if (TryHitPlayer() == false)
             {
                 //if it fails
-                lastMove = "try hit player failed";
                 MoveRandomly();                
             }
-            else
-                lastMove = "try hit player";
         }
         else
         {
             //wander
-            lastMove = "wander";
             MoveRandomly();
         }
     }
