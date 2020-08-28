@@ -13,16 +13,9 @@ public class LoadRoom : MonoBehaviour
     {
         if(!overlay)
         {
-            for(int x = 0; x < room.roomWidth; x++)
+            if(!CanCreateRoom(room, offset, tilemap))
             {
-                for(int y = 0; y < room.roomHeight; y++)
-                {
-                    if(tilemap.backgroundTilemap.HasTile(new Vector3Int(x + offset.x, y + offset.y, 0)) == true)
-                    {
-                        Debug.Log("Already tile here");
-                        return false;
-                    }
-                }
+                return false;
             }
         }
 
@@ -31,6 +24,22 @@ public class LoadRoom : MonoBehaviour
             for(int y = 0; y < room.roomHeight; y++)
             {
                 tilemap.backgroundTilemap.SetTile(new Vector3Int(x + offset.x, y + offset.y, 0), room.tiles[x * room.roomHeight + y]);
+            }
+        }
+        return true;
+    }
+
+    static public bool CanCreateRoom(Room room, Vector2Int offset, WorldTilemap tilemap)
+    {
+        for(int x = 0; x < room.roomWidth; x++)
+        {
+            for(int y = 0; y < room.roomHeight; y++)
+            {
+                if(tilemap.backgroundTilemap.HasTile(new Vector3Int(x + offset.x, y + offset.y, 0)) == true)
+                {
+                    Debug.Log("Already tile here");
+                    return false;
+                }
             }
         }
         return true;

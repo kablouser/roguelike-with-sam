@@ -8,7 +8,10 @@ public class Room : ScriptableObject
 {
     public int roomWidth;
     public int roomHeight;
-    public Vector2Int[] entrances = new Vector2Int[4];
+    public Vector2Int[] entrancesN;
+    public Vector2Int[] entrancesE;
+    public Vector2Int[] entrancesS;
+    public Vector2Int[] entrancesW;
     public bool[] availableEntranceDirections = new bool[4];
 
     public TileBase[] tiles;

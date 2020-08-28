@@ -14,11 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomWidth: 4
   roomHeight: 3
-  entrances:
-  - {x: 0, y: 0}
-  - {x: 3, y: 1}
-  - {x: 0, y: 0}
-  - {x: 1, y: 1}
+  entrancesN: []
+  entrancesE:
+  - {x: 4, y: 1}
+  entrancesS: []
+  entrancesW:
+  - {x: 0, y: 1}
   availableEntranceDirections: 00010001
   tiles:
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}

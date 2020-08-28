@@ -12,12 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5babaf3bd0686d4e8de763d8fd5fb5b, type: 3}
   m_Name: NewRoom1
   m_EditorClassIdentifier: 
-  roomWidth: 10
-  roomHeight: 10
-  entrances:
-  - {x: 4, y: 9}
-  - {x: 9, y: 5}
+  roomWidth: 7
+  roomHeight: 7
+  entrancesN:
+  - {x: 1, y: 6}
+  - {x: 2, y: 6}
+  - {x: 3, y: 6}
+  - {x: 4, y: 6}
+  - {x: 5, y: 6}
+  entrancesE:
+  - {x: 6, y: 1}
+  - {x: 6, y: 2}
+  - {x: 6, y: 3}
+  - {x: 6, y: 4}
+  - {x: 6, y: 5}
+  entrancesS:
+  - {x: 1, y: 0}
+  - {x: 2, y: 0}
+  - {x: 3, y: 0}
   - {x: 4, y: 0}
+  - {x: 5, y: 0}
+  entrancesW:
+  - {x: 0, y: 1}
+  - {x: 0, y: 2}
+  - {x: 0, y: 3}
+  - {x: 0, y: 4}
   - {x: 0, y: 5}
   availableEntranceDirections: 01010101
   tiles:
@@ -29,12 +48,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -47,14 +60,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 575c67b19787ed64589003a686cc2713, type: 2}
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -67,9 +74,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
   - {fileID: 0}
@@ -77,42 +81,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
