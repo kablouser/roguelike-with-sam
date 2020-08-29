@@ -10,14 +10,17 @@ public class Combatant : MonoBehaviour
     public CharacterComponents character;
 
     public GameObject characterSprite;
+    public GameObject slashSprite;
     public GameObject deathEffect;
 
     public CurveScriptable attackAnimation;
     public CurveScriptable onHitAnimation;
+    public CurveScriptable slashAnimation;
     public CurveScriptable deathAnimation;    
 
     private WorldTilemap world;
-    private Tweener tweener;
+    private Tweener mainTweener;
+    private Tweener slashTweener;
 
     private Vector3 attackStart;
     private bool damageDealt;
@@ -25,7 +28,8 @@ public class Combatant : MonoBehaviour
     private void Awake()
     {
         world = WorldTilemap.Current;
-        tweener = new Tweener(this);
+        mainTweener = new Tweener(this);
+        slashTweener = new Tweener(this);
     }
 
     public bool Attack(Vector2Int direction, System.Action onEnd = null)
@@ -48,15 +52,15 @@ public class Combatant : MonoBehaviour
         foreach (var overlay in overlays)
             if(overlay is CharacterComponents other && other.characterSheet.IsAlive)
             {
-                tweener.SetEnumerator(AttackAnimation(other.mover.GetPosition - character.mover.GetPosition, other));
-                tweener.SetOnEnd(() =>
+                mainTweener.SetEnumerator(AttackAnimation(other.mover.GetPosition - character.mover.GetPosition, other));
+                mainTweener.SetOnEnd(() =>
                 {
                     //damage is dealt during the animation
                     onEnd?.Invoke();
                     transform.position = attackStart;
                 });
 
-                Tweener.EnqueueMain(tweener);
+                Tweener.EnqueueMain(mainTweener);
                 return true;
             }
 
@@ -65,9 +69,9 @@ public class Combatant : MonoBehaviour
 
     public bool UndoAttack()
     {
-        if (tweener.IsEnded == false && damageDealt == false)
+        if (mainTweener.IsEnded == false && damageDealt == false)
         {
-            tweener.End(true);
+            mainTweener.End(true);
             transform.position = character.mover.GetPosition;
             return true;
         }
@@ -76,21 +80,30 @@ public class Combatant : MonoBehaviour
 
     private void PlayHitAnimation(out Tweener hitTweener)
     {
+        slashSprite.SetActive(true);
+        slashTweener.SetEnumerator(slashTweener.ScaleWithCurve(slashSprite.transform, slashAnimation.curve));
+        slashTweener.SetOnEnd(() => slashSprite.SetActive(false));
+        slashTweener.Start();
+
         if (character.characterSheet.IsAlive)
         {
             //play normal on hit animation
-            tweener.SetEnumerator(tweener.ScaleWithCurve(characterSprite.transform, onHitAnimation.curve));
-            tweener.SetOnEnd(null);
+            mainTweener.SetEnumerator(mainTweener.ScaleWithCurve(characterSprite.transform, onHitAnimation.curve));
+            mainTweener.SetOnEnd(() => slashTweener.End());
         }
         else
         {
             //play death animation
             Instantiate(deathEffect, characterSprite.transform.position, Quaternion.identity);
-            tweener.SetEnumerator(tweener.ScaleWithCurve(characterSprite.transform, deathAnimation.curve));
-            tweener.SetOnEnd(() => Destroy(gameObject));
+            mainTweener.SetEnumerator(mainTweener.ScaleWithCurve(characterSprite.transform, deathAnimation.curve));
+            mainTweener.SetOnEnd(() =>
+            {
+                slashTweener.End();
+                Destroy(gameObject);
+            });
         }
-        tweener.Start();
-        hitTweener = tweener;
+        mainTweener.Start();
+        hitTweener = mainTweener;
     }
 
     private IEnumerator AttackAnimation(Vector3 direction, CharacterComponents other)
@@ -117,7 +130,7 @@ public class Combatant : MonoBehaviour
                 //decrease other health
                 other.characterSheet.health.Decrease(
                     //with my attack
-                    character.characterSheet.attack.GetTotal);
+                    character.characterSheet.attributes.attack.GetTotal);
                 damageDealt = true;
                 //play onhit animation
                 other.combatant.PlayHitAnimation(out hitTweener);

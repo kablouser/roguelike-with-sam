@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Prevents errors when the scene is unloaded/destroyed
+/// </summary>
 public class CleanupController : Singleton<CleanupController>
 {
     public void OnUnloadScene() =>

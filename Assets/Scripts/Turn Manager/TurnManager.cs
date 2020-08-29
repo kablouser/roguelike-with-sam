@@ -55,6 +55,7 @@ public class TurnManager : Singleton<TurnManager>
         for (int i = 0; i < enemies.Count; i++)
         {
             var enemySheet = enemies[i].characterSheet;
+            if (enemySheet.IsAlive == false) continue;
             enemySheet.NewTurn();
             yield return new WaitUntil(() => enemySheet.IsAnimationOver);
 

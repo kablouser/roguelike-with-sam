@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7044928658729168918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0abba007b5c3be44c87178561b1c2dff, type: 3}
+  m_Name: Equipped Effect
+  m_EditorClassIdentifier: 
+  duration: -1
+  increases:
+    strength: 0
+    dexterity: 0
+    intelligence: 0
+    attack: 2
+    defence: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fb68f331897a434bbfb3d469ecf56a4, type: 3}
+  m_Name: Short Sword
+  m_EditorClassIdentifier: 
+  displayName: Short Sword
+  description: A nimble stabby weapon.
+  sprite: {fileID: -3721989352038006921, guid: 08e0a9c6b040ec445b74fc09f4b7abb2, type: 3}
+  type: 0
+  equippedEffect: {fileID: -7044928658729168918}

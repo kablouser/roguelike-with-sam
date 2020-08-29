@@ -1,21 +1,20 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : Singleton<PlayerController>
 {
     public const string
         Horizontal = "Horizontal",
         Vertical = "Vertical",
-        Jump = "Jump";
+        Jump = "Jump",
+        Cancel = "Cancel";
 
     public PlayerComponents character;
     public float repeatDelay = 0.2f;
     [Range(10, 30)]
     public float inputsPerSecond = 10f;
-
     public float speedupTime = 1.5f;
-
     public float diagonalSwitchWait = 0.2f;
+    public ControlWindow[] controlWindows;
 
     private TurnManager turnManager;
     private bool isLocked;
@@ -24,6 +23,8 @@ public class PlayerController : Singleton<PlayerController>
 
     private float diagonalSwitchLimit;
     private Vector2Int orthogonalInput;
+
+    private ControlWindow openWindow;
 
     public override void Awake()
     {
@@ -37,15 +38,22 @@ public class PlayerController : Singleton<PlayerController>
 
     private void Update()
     {
-        ProcessSpeedup(Input.GetButton(Jump));
-
-        Vector2Int previousInput = moveInput;
+        Vector2Int previous = moveInput;
         moveInput = new Vector2Int(
             Mathf.RoundToInt(Input.GetAxisRaw(Horizontal)),
             Mathf.RoundToInt(Input.GetAxisRaw(Vertical)));
+        int processedResult = ProcessInput(moveInput, previous, ref nextMoveRepeat);
 
-        if (ProcessMove(previousInput))
-            MoveOrAttack(moveInput);
+        ProcessControlWindows();
+
+        if (openWindow == null)
+        {
+            ProcessSpeedup(Input.GetButton(Jump));
+            if (ProcessGameplay(processedResult))
+                MoveOrAttack(moveInput);
+        }
+        else if(1 < processedResult)
+            openWindow.MoveInput(moveInput);
     }
 
     public void UnlockControl()
@@ -60,15 +68,14 @@ public class PlayerController : Singleton<PlayerController>
     /// or has been held down for long enough.
     /// And the rate of inputs allowed each second is capped.
     /// </summary>
-    private bool ProcessMove(Vector2Int previous)
+    private bool ProcessGameplay(int processedResult)
     {
-        int result = ProcessInput(moveInput, previous, ref nextMoveRepeat);
-        if (result == 0)
+        if (processedResult == 0)
         {
             //don't allow diagonal switch
             diagonalSwitchLimit = 0;
         }
-        else if(result == 3)
+        else if(processedResult == 3)
         {
             //input down
 
@@ -99,15 +106,22 @@ public class PlayerController : Singleton<PlayerController>
                 diagonalSwitchLimit = 0;
         }
 
-        return 1 < result;
+        return 1 < processedResult;
     }
 
     private void MoveOrAttack(Vector2Int direction)
     {
         if (isLocked) return;
 
-        if (character.mover.Move(new Vector3Int(direction.x, direction.y, 0), turnManager.EndPlayerTurn) ||
-            character.combatant.Attack(direction, turnManager.EndPlayerTurn))
+        if (character.mover.Move(new Vector3Int(direction.x, direction.y, 0), turnManager.EndPlayerTurn))
+        {
+            //pickup all items on the ground
+            var droppedItems = WorldTilemap.Current.GetOverlays<DroppedItem>(character.mover.GetPosition);
+            foreach (var droppedItem in droppedItems)
+                droppedItem.Pickup(character.inventory);
+            isLocked = true;
+        }
+        else if(character.combatant.Attack(direction, turnManager.EndPlayerTurn))
             isLocked = true;
     }
 
@@ -129,11 +143,13 @@ public class PlayerController : Singleton<PlayerController>
             //held input
             if (nextRepeat < Time.time)
             {
+                //signal here
                 nextRepeat = Time.time + 1 / inputsPerSecond;
                 return 2;
             }
             else
             {
+                //don't act here
                 return 1;
             }
         }
@@ -143,5 +159,36 @@ public class PlayerController : Singleton<PlayerController>
             nextRepeat = Time.time + repeatDelay;
             return 3;
         }
+    }
+
+    private void ProcessControlWindows()
+    {
+        for (int i = 0; i < controlWindows.Length; i++)
+            if (Input.GetKeyDown(controlWindows[i].GetActivationKey))
+            {
+                if (openWindow == controlWindows[i])
+                    //close window if the activation button is used again
+                    SetOpenWindow(null);
+                else
+                    SetOpenWindow(controlWindows[i]);
+                return;
+            }
+
+        //detect escape/cancel key
+        if (openWindow != null && Input.GetButtonDown(Cancel))
+            SetOpenWindow(null);
+    }
+
+    /// <summary>
+    /// newWindow can be null to close the current window
+    /// </summary>
+    private void SetOpenWindow(ControlWindow newWindow)
+    {
+        if(openWindow != null)
+            openWindow.gameObject.SetActive(false);
+
+        openWindow = newWindow;
+        if(newWindow != null)
+            newWindow.gameObject.SetActive(true);
     }
 }
