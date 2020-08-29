@@ -9,8 +9,14 @@ public class MakeRoom : MonoBehaviour
     [Header("Room Properties")]
     public int roomWidth;
     public int roomHeight;
-    [Header("Room Properties - NESW")]
-    public Vector2Int[] entrances = new Vector2Int[4];
+    [Header("North Entrances")]
+    public Vector2Int[] entrancesN = new Vector2Int[0];
+    [Header("East Entrances")]
+    public Vector2Int[] entrancesE = new Vector2Int[0];
+    [Header("South Entrances")]
+    public Vector2Int[] entrancesS = new Vector2Int[0];
+    [Header("West Entrances")]
+    public Vector2Int[] entrancesW = new Vector2Int[0];
 
     [Header("Dependances")]
     public string assetName = "NewRoom";
@@ -41,18 +47,26 @@ public class MakeRoom : MonoBehaviour
             }
         }
 
-        room.entrances = entrances;
-
-        for(int x = 0; x < entrances.Length; x++)
+        //Setting which directions the room can have entraces from
+        if(entrancesN.Length > 0)
         {
-            if(entrances[x] != new Vector2Int(0, 0))
-            {
-                room.availableEntranceDirections[x] = true;
-            }
-            else
-            {
-                room.availableEntranceDirections[x] = false;
-            }
+            room.entrancesN = entrancesN;
+            room.availableEntranceDirections[0] = true;
+        }
+        if(entrancesE.Length > 0)
+        {
+            room.entrancesE = entrancesE;
+            room.availableEntranceDirections[1] = true;
+        }
+        if(entrancesS.Length > 0)
+        {
+            room.entrancesS = entrancesS;
+            room.availableEntranceDirections[2] = true;
+        }
+        if(entrancesW.Length > 0)
+        {
+            room.entrancesW = entrancesW;
+            room.availableEntranceDirections[3] = true;
         }
 
         AssetDatabase.CreateAsset(room, "Assets/Scriptable Objects/Rooms/" + assetName + ".asset");
