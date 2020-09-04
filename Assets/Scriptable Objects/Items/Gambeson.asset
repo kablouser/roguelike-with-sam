@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8fb68f331897a434bbfb3d469ecf56a4, type: 3}
+  m_Name: Gambeson
+  m_EditorClassIdentifier: 
+  displayName: Gambeson
+  description: Thickly padded armour.
+  sprite: {fileID: -344602229487202850, guid: 6170aa5e5465e07499bc7a9ea249d39b, type: 3}
+  equipmentType: 3
+  equippedEffect: {fileID: 7099723937455581949}
+  durability: 10
+  maxDurability: 10
+--- !u!114 &7099723937455581949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0abba007b5c3be44c87178561b1c2dff, type: 3}
+  m_Name: Equipped Effect
+  m_EditorClassIdentifier: 
+  hideInCharacterSheet: 0
+  displayName: equipped
+  duration: -1
+  increases:
+    strength: 0
+    dexterity: 0
+    intelligence: 0
+    attack: 0
+    armour: 1
+    critical: 0
+    dodge: 0

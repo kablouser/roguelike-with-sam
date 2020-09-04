@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7044928658729168918
+--- !u!114 &-4421884834931320782
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -19,7 +19,7 @@ MonoBehaviour:
     strength: 0
     dexterity: 0
     intelligence: 0
-    attack: 1
+    attack: 3
     armour: 0
     critical: 0
     dodge: 0
@@ -33,12 +33,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8fb68f331897a434bbfb3d469ecf56a4, type: 3}
-  m_Name: Short Sword
+  m_Name: Longsword
   m_EditorClassIdentifier: 
-  displayName: Short Sword
-  description: Nimble stabby weapon.
-  sprite: {fileID: -3721989352038006921, guid: 08e0a9c6b040ec445b74fc09f4b7abb2, type: 3}
-  equipmentType: 0
-  equippedEffect: {fileID: -7044928658729168918}
+  displayName: Longsword
+  description: Long two-handed duelling weapon.
+  sprite: {fileID: 1281413409690731927, guid: 08e0a9c6b040ec445b74fc09f4b7abb2, type: 3}
+  equipmentType: 1
+  equippedEffect: {fileID: -4421884834931320782}
   durability: 0
   maxDurability: 0

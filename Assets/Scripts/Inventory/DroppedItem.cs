@@ -1,14 +1,12 @@
 ﻿using UnityEngine;
 
-using static Inventory;
-
 public class DroppedItem : MonoBehaviour, WorldTilemap.IOverlay
 {
     bool WorldTilemap.IOverlay.IsBlocking => false;
 
     [ContextMenuItem("Update Sprite", "UpdateSprite")]
     public SpriteRenderer itemSprite;
-    public InventoryEntry itemInfo;
+    public Item item;
     private Vector3Int worldPosition;
 
     void WorldTilemap.IOverlay.SetDisplay(bool isActive) =>
@@ -32,22 +30,21 @@ public class DroppedItem : MonoBehaviour, WorldTilemap.IOverlay
     [ContextMenu("Update Sprite")]
     private void UpdateSprite()
     {
-        if (itemInfo.item == null)
+        if (item == null)
             itemSprite.sprite = null;
         else
-            itemSprite.sprite = itemInfo.item.sprite;
+            itemSprite.sprite = item.sprite;
     }
 
-    public void Initialise(InventoryEntry itemInfo)
+    public void Initialise(Item item)
     {
-        this.itemInfo = itemInfo;
+        this.item = item;
         UpdateSprite();
     }
 
     public void Pickup(Inventory intoInventory)
     {
-        //write to console
-        intoInventory.AddItem(itemInfo.count, itemInfo.item);
+        intoInventory.AddItem(item);
         enabled = false;
         Destroy(gameObject);
     }

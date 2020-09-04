@@ -8,8 +8,8 @@ public class InventoryTitlePanel : MonoBehaviour
     public enum TabType { Inventory, Weapon, Armour, Accessory, Scroll, Potion, MAX }
 
     private const string startFormat = "<color=#00000080>";
-    private const string tabFormat = "-{0}- ";
-    private const string currentTabFormat = "</color>-{0}- <color=#00000080>";
+    private const string tabFormat = "{0}  ";
+    private const string currentTabFormat = "</color><{0}>  <color=#00000080>";
 
     [SerializeField]
     private TextMeshProUGUI title;

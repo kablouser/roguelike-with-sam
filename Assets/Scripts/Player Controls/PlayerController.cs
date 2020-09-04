@@ -26,6 +26,8 @@ public class PlayerController : Singleton<PlayerController>
 
     private ControlWindow openWindow;
 
+    private Console console;
+
     public override void Awake()
     {
         base.Awake();
@@ -33,6 +35,19 @@ public class PlayerController : Singleton<PlayerController>
         {
             turnManager = TurnManager.Current;
             TurnManager.Current.RegisterPlayer(character);
+            console = Console.Current;
+        }
+    }
+
+    private void Start()
+    {
+        var sheet = character.characterSheet;
+        string[] possibleNames = new string[] { "kite shield", "goblin poison", "slime", "retarded", "red hot", "boon", "enchanted weapon" };
+        foreach (var attribute in sheet.attributes)
+        {
+            int randomCount = Random.Range(0, 10);
+            for (int i = 0; i < randomCount; i++)
+                attribute.AddModifier(null, possibleNames[Random.Range(0, possibleNames.Length)], Random.Range(-10, 10));
         }
     }
 
@@ -118,7 +133,10 @@ public class PlayerController : Singleton<PlayerController>
             //pickup all items on the ground
             var droppedItems = WorldTilemap.Current.GetOverlays<DroppedItem>(character.mover.GetPosition);
             foreach (var droppedItem in droppedItems)
+            {
                 droppedItem.Pickup(character.inventory);
+                console.AddLog(string.Format("picked up {0}.", droppedItem.item.displayName));
+            }
             isLocked = true;
         }
         else if(character.combatant.Attack(direction, turnManager.EndPlayerTurn))

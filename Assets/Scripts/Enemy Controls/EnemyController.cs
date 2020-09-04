@@ -52,6 +52,12 @@ public class EnemyController : MonoBehaviour
     private bool TryHitPlayer()
     {
         Vector3Int playerDirection = GetPlayerPosition - character.mover.GetPosition;
+        if(Mathf.Abs(playerDirection.x) <= 1 && Mathf.Abs(playerDirection.y) <= 1)
+        {
+            //attack range
+            return character.combatant.Attack(new Vector2Int(playerDirection.x, playerDirection.y), EndTurn);
+        }
+
         if (playerDirection.y == 0)
             //move in x
             return character.mover.Move(new Vector3Int(SnapValue(playerDirection.x), 0, 0), EndTurn);

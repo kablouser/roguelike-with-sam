@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TurnManager : Singleton<TurnManager>
 {
+    public int turnNumber = 1;
+
     private PlayerComponents player;
     private List<EnemyComponents> enemies;
     private List<EnemyComponents> deadEnemies;
@@ -19,10 +21,12 @@ public class TurnManager : Singleton<TurnManager>
         if (character is EnemyComponents enemy)
         {
             deadEnemies.Add(enemy);
+            Console.Current.AddLog("enemy died!");
         }
         else if (character is PlayerComponents player)
         {
             //The player died!
+            Console.Current.AddLog("you died!");
         }
     }
 
@@ -68,6 +72,7 @@ public class TurnManager : Singleton<TurnManager>
             enemies.Remove(deadEnemies[i]);
         deadEnemies.Clear();
 
+        turnNumber++;
         //start player turn
         player.characterSheet.NewTurn();
         player.playerController.UnlockControl();

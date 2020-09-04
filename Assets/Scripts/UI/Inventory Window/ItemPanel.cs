@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Text;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -17,27 +18,67 @@ public class ItemPanel : MonoBehaviour
 
     private bool isFocused;
 
+    private static StringBuilder GetBuilder
+    {
+        get
+        {
+            if (myBuilder == null)
+                myBuilder = new StringBuilder();
+            else
+                myBuilder.Clear();
+            return myBuilder;
+        }
+    }
+
+    private static StringBuilder myBuilder;
+
     private void Awake()
     {
         SetFocused(false);
     }
 
-    public void Initialise(int index, Sprite icon, string description)
+    public void Initialise(int index, Item item)
     {
         if(index < 100)
             indexDisplay.SetText(index.ToString() + ".");
         else
             indexDisplay.SetText(index.ToString());
 
-        if (icon == null)
+        if (item == null || item.sprite == null)
             itemIcon.enabled = false;
         else
         {
             itemIcon.enabled = true;
-            itemIcon.sprite = icon;
+            itemIcon.sprite = item.sprite;
         }
-        
-        itemDescription.SetText(description);
+
+        if (item == null)
+            itemDescription.SetText(string.Empty);
+        else
+        {
+            StringBuilder builder = GetBuilder;            
+
+            builder.Append(item.displayName + ". ");
+            builder.Append(item.description);
+            builder.AppendLine();
+
+            var statusText = item.GetStatusText;
+            if (statusText != null)
+                foreach (string status in statusText)
+                {
+                    if (status == null || status == string.Empty)
+                        continue;
+                    else
+                        builder.Append(status + " ");
+                }
+
+            itemDescription.SetText(builder.ToString());
+        }
+    }
+
+    public void SetText(string text)
+    {
+        itemDescription.SetText(text);
     }
 
     public void SetFocused(bool isFocused)

@@ -4,20 +4,7 @@ using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    [System.Serializable]
-    public struct InventoryEntry
-    {
-        public uint count;
-        public Item item;
-
-        public InventoryEntry(uint count, Item item)
-        {
-            this.count = count;
-            this.item = item;
-        }
-    }
-
-    public ReadOnlyCollection<InventoryEntry> GetItems
+    public ReadOnlyCollection<Item> GetItems
     {
         get
         {
@@ -31,11 +18,15 @@ public class Inventory : MonoBehaviour
     public enum EquipmentType { oneHanded, twoHanded, head, body, feets, hands, necklace, ring, MAX }
     public enum ItemType { none, weapon, armour, accessory, scroll, potion, MAX }
 
+    public delegate void AskLeftOrRight(AnswerLeftOrRight answerCallback);
+    public delegate void AnswerLeftOrRight(bool isLeft);
+
     public CharacterComponents character;
+    public event System.Action OnInventoryChange;
 
     [SerializeField]
-    private List<InventoryEntry> items;
-    private ReadOnlyCollection<InventoryEntry> readonlyItems;
+    private List<Item> items;
+    private ReadOnlyCollection<Item> readonlyItems;
 
     private Armament[] equipment;
 
@@ -44,56 +35,53 @@ public class Inventory : MonoBehaviour
         equipment = new Armament[(int)EquipmentSlot.MAX];
     }
 
-    public void AddItem(uint count, Item item)
+    private void OnValidate()
     {
-        int findIndex = items.FindIndex(entry => entry.item == item);
-        if(findIndex == -1)
-            items.Add(new InventoryEntry(count, item));
-        else
-        {
-            InventoryEntry getEntry = items[findIndex];
-            getEntry.count += count;
-            items[findIndex] = getEntry;
-        }
+        OnInventoryChange?.Invoke();
     }
 
-    public void RemoveItem(uint count, Item item)
+    public void AddItem(Item item)
     {
-        int findIndex = items.FindIndex(entry => entry.item == item);
-        if (findIndex == -1)
+        item = item.RequestInstance();
+        items.Add(item);
+    }
+
+    public bool RemoveFirstItem(Item item)
+    {
+        bool result = items.Remove(item);
+
+        if (item is Armament armament)
+            armament.Unequip();
+
+        return result;
+    }
+
+    public void RemoveItem(int index)
+    {
+        if(index < 0 || items.Count <= index)
+        {
+            Debug.LogWarning($"RemoveItem index {index} out of range [0,{items.Count - 1}]", this);
             return;
-        else
-        {
-            InventoryEntry getEntry = items[findIndex];
-            getEntry.count -= count;
-            if (getEntry.count <= 0)
-                items.RemoveAt(findIndex);
-            else
-                items[findIndex] = getEntry;
         }
-    }
+        Armament removeItem = items[index] as Armament;
+        items.RemoveAt(index);
 
-    public bool Contains(Item item, uint atLeastCount = 1)
-    {
-        int findIndex = items.FindIndex(entry => entry.item == item);
-        if (findIndex == -1)
-            return false;
-        else
-            return atLeastCount <= items[findIndex].count;
+        if(removeItem != null)
+            removeItem.Unequip();
     }
 
     /// <summary>
     /// askIsLeft is called if the armament can be equipped in the left hand or the right hand.
     /// </summary>
-    public void EquipItem(Armament armament, System.Func<bool> askIsLeft)
+    public void EquipItem(Armament armament, AskLeftOrRight askLeftOrRight)
     {
         switch (armament.equipmentType)
         {
             case EquipmentType.oneHanded:
-                EquipSingleItem(armament, askIsLeft() ? EquipmentSlot.leftHand : EquipmentSlot.rightHand);
+                askLeftOrRight(isLeft => EquipSingleItem(armament, isLeft ? EquipmentSlot.leftHand : EquipmentSlot.rightHand));                
                 break;
             case EquipmentType.ring:
-                EquipSingleItem(armament, askIsLeft() ? EquipmentSlot.leftRing : EquipmentSlot.rightRing);
+                askLeftOrRight(isLeft => EquipSingleItem(armament, isLeft ? EquipmentSlot.leftRing : EquipmentSlot.rightRing));
                 break;
             default:
                 EquipSingleItem(armament, (EquipmentSlot)armament.equipmentType);
@@ -108,13 +96,13 @@ public class Inventory : MonoBehaviour
         if (armament == null)
             return;
 
-        armament.Unequip(character);
+        armament.Unequip();
         equipment[index] = null;
         if (armament.equipmentType == EquipmentType.twoHanded)
             equipment[(int)EquipmentSlot.leftHand] = equipment[(int)EquipmentSlot.rightHand] = null;
     }
 
-    public void GetItemsFiltered(List<InventoryEntry> outputList, System.Func<InventoryEntry, bool> filter)
+    public void GetItemsFiltered(List<Item> outputList, System.Func<Item, bool> filter)
     {
         outputList.Clear();
         items.ForEach(x =>
@@ -132,7 +120,7 @@ public class Inventory : MonoBehaviour
             UnequipItem(EquipmentSlot.leftHand);
             UnequipItem(EquipmentSlot.rightHand);
 
-            armament.Equip(character);
+            armament.Equip(character, EquipmentSlot.leftHand);
             equipment[(int)EquipmentSlot.leftHand] = equipment[(int)EquipmentSlot.rightHand] = armament;
         }
         else
@@ -140,7 +128,7 @@ public class Inventory : MonoBehaviour
             //clear out item currently equipped
             UnequipItem(intoSlot);
 
-            armament.Equip(character);
+            armament.Equip(character, intoSlot);
             equipment[(int)intoSlot] = armament;
         }        
     }
