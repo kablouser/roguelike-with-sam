@@ -14,6 +14,8 @@ public class Room : ScriptableObject
     public Vector2Int[] entrancesW;
     public bool[] availableEntranceDirections = new bool[4];
 
+    public Vector2Int hallwayCenter;
+
     public TileBase[] tiles;
 
     [ContextMenu("PrintTiles")]

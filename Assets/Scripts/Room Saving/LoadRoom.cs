@@ -18,6 +18,17 @@ public class LoadRoom : MonoBehaviour
                 return false;
             }
         }
+        else
+        {
+            for(int x = 0; x < room.roomWidth; x++)
+            {
+                for(int y = 0; y < room.roomHeight; y++)
+                {
+                    tilemap.backgroundTilemap.SetTile(new Vector3Int(x + offset.x - room.hallwayCenter.x, y + offset.y - room.hallwayCenter.y, 0), room.tiles[x * room.roomHeight + y]);
+                }
+            }
+            return true;
+        }
 
         for(int x = 0; x < room.roomWidth; x++)
         {

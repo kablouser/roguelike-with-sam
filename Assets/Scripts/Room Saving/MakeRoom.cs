@@ -72,4 +72,30 @@ public class MakeRoom : MonoBehaviour
         AssetDatabase.CreateAsset(room, "Assets/Scriptable Objects/Rooms/" + assetName + ".asset");
         AssetDatabase.SaveAssets();
     }
+
+    private void OnDrawGizmosSelected()
+    {
+        for(int i = 0; i < entrancesN.Length; i++)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(new Vector3(entrancesN[i].x + 0.5f, entrancesN[i].y + 0.5f), new Vector3(1, 1));
+        }
+        for(int i = 0; i < entrancesE.Length; i++)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(new Vector3(entrancesE[i].x + 0.5f, entrancesE[i].y + 0.5f), new Vector3(1, 1));
+        }
+        for(int i = 0; i < entrancesS.Length; i++)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(new Vector3(entrancesS[i].x + 0.5f, entrancesS[i].y + 0.5f), new Vector3(1, 1));
+        }
+        for(int i = 0; i < entrancesW.Length; i++)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(new Vector3(entrancesW[i].x + 0.5f, entrancesW[i].y + 0.5f), new Vector3(1, 1));
+        }
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(new Vector3(roomWidth/2 + 0.5f, roomHeight/2 + 0.5f), new Vector3(roomWidth, roomHeight));
+    }
 }

@@ -13,24 +13,16 @@ MonoBehaviour:
   m_Name: Hallway1-NS
   m_EditorClassIdentifier: 
   roomWidth: 3
-  roomHeight: 4
+  roomHeight: 1
   entrancesN:
-  - {x: 1, y: 4}
+  - {x: 1, y: 0}
   entrancesE: []
   entrancesS:
   - {x: 1, y: 0}
   entrancesW: []
   availableEntranceDirections: 01000100
+  hallwayCenter: {x: 1, y: 0}
   tiles:
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
   - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
-  - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
   - {fileID: 11400000, guid: 630f778a7c7a86b46af4e45b67438542, type: 2}
